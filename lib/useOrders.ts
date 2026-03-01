@@ -36,11 +36,15 @@ export default function useOrders() {
   const [error, setError] = useState<Error | null>(null)
 
   const fetchOrders = useCallback(async () => {
-    console.log('🔄 Fetching orders from API...')
+    console.log('🔄 Fetching orders from /api/orders...')
     setLoading(true)
     setError(null)
     
     try {
+      // GET /api/orders is the public endpoint that returns all orders sorted by
+      // creation date.  There is no GET on /api/optimize-route so the previous
+      // version returned a 404 HTML page which caused the error message in the
+      // UI.
       const response = await fetch('/api/orders', {
         method: 'GET',
         headers: {
@@ -67,7 +71,7 @@ export default function useOrders() {
         setOrders([])
       } else {
         // Check for null delivery_zip_code
-        const ordersWithNullZip = data.filter((o: Order) => !o.delivery_zip_code)
+        const ordersWithNullZip = data.filter((o: Order) => !o.zip_code)
         if (ordersWithNullZip.length > 0) {
           console.warn(`⚠️ ${ordersWithNullZip.length} orders have null delivery_zip_code:`, ordersWithNullZip)
         }
