@@ -7,7 +7,7 @@ type AuthPageProps = {
 }
 
 type FormData = {
-  name: string
+  full_name: string
   email: string
   password: string
   confirmPassword: string
@@ -35,7 +35,7 @@ export default function AuthPage({ onAuthSuccess }: AuthPageProps) {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
   const [formData, setFormData] = useState<FormData>({
-    name: "",
+    full_name: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -65,7 +65,7 @@ export default function AuthPage({ onAuthSuccess }: AuthPageProps) {
       setError("Passwords do not match")
       return false
     }
-    if (!isLogin && !formData.name.trim()) {
+    if (!isLogin && !formData.full_name.trim()) {
       setError("Please enter your name")
       return false
     }
@@ -103,7 +103,7 @@ export default function AuthPage({ onAuthSuccess }: AuthPageProps) {
           .insert([
             {
               id: data.user.id,
-              full_name: formData.name,
+                  full_name: formData.full_name,
               street: formData.street,
               city: formData.city,
               state: formData.state,
@@ -125,7 +125,7 @@ export default function AuthPage({ onAuthSuccess }: AuthPageProps) {
   const toggleAuthMode = () => {
     setIsLogin(!isLogin)
     setError("")
-    setFormData({ name: "", email: "", password: "", confirmPassword: "", street: "", city: "", state: "", pincode: "", phone: "" })
+    setFormData({ full_name: "", email: "", password: "", confirmPassword: "", street: "", city: "", state: "", pincode: "", phone: "" })
   }
 
   return (
@@ -161,8 +161,8 @@ export default function AuthPage({ onAuthSuccess }: AuthPageProps) {
                   <User className="absolute left-3 top-3.5 w-5 h-5 text-slate-400" />
                   <input
                     type="text"
-                    name="name"
-                    value={formData.name}
+                    name="full_name"
+                    value={formData.full_name}
                     onChange={handleInputChange}
                     placeholder="John Doe"
                     className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
