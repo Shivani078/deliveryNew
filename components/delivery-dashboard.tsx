@@ -21,19 +21,30 @@ import DriverProfile from "./driver-profile"
 // ─── Types ────────────────────────────────────────────────────────────────────
 export interface Order {
   id: string
-  status: "pending" | "delivered" | "in_progress" | "done"
-  name?: string
-  email?: string
-  phone?: string
-  address?: string
-  city?: string
-  state?: string
-  zip_code?: string
-  order_number?: string
-  total?: number
-  payment_method?: string
+  user_id: string
+  status: string
+  total: number
   created_at: string
-  updated_at?: string
+  updated_at: string
+  name: string
+  email: string
+  phone: string
+  address: string
+  city: string
+  state: string
+  zip_code: string
+  order_number: string
+  payment_method: string
+  customer_name: string
+  customer_phone: string
+  delivery_address: string
+  delivery_city: string
+  delivery_state: string
+  delivery_zip_code: string
+  customer_email: string
+  payment_id: string
+  payment_order_id: string
+  payment_signature: string
   delivery_lat?: number
   delivery_lng?: number
   delivery_slot?: string

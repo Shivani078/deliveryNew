@@ -6,7 +6,17 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Navigation, Clock, AlertCircle, CheckCircle2, Loader } from "lucide-react"
 
-export default function LiveTracking({ order, onStatusChange }) {
+type TrackingOrder = {
+  status?: string;
+  distance?: number;
+};
+
+type LiveTrackingProps = {
+  order: TrackingOrder | null;
+  onStatusChange: (status: string) => void;
+};
+
+export default function LiveTracking({ order, onStatusChange }: LiveTrackingProps) {
   const [currentLocation, setCurrentLocation] = useState({ lat: 28.6139, lng: 77.209 })
   const [deliveryStatus, setDeliveryStatus] = useState(order?.status || "pending")
   const [isTracking, setIsTracking] = useState(false)
@@ -18,7 +28,7 @@ export default function LiveTracking({ order, onStatusChange }) {
       message: "Order picked up from warehouse",
     },
   ])
-  const [eta, setEta] = useState(null)
+  const [eta, setEta] = useState<Date | null>(null)
 
   useEffect(() => {
     if (!isTracking) return
@@ -39,7 +49,7 @@ export default function LiveTracking({ order, onStatusChange }) {
           setDeliveryStatus(newStatus)
           onStatusChange?.(newStatus)
 
-          const messages = {
+          const messages: Record<string, string> = {
             "in-progress": "Delivery partner is on the way",
             nearby: "Delivery partner is nearby",
             delivered: "Order delivered successfully",
@@ -69,7 +79,7 @@ export default function LiveTracking({ order, onStatusChange }) {
     }
   }, [order?.distance])
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case "pending":
         return "bg-yellow-100 text-yellow-800 border-yellow-300"
@@ -84,7 +94,7 @@ export default function LiveTracking({ order, onStatusChange }) {
     }
   }
 
-  const getStatusIcon = (status) => {
+  const getStatusIcon = (status: string) => {
     switch (status) {
       case "pending":
         return <Clock className="w-4 h-4" />

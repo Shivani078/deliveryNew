@@ -10,7 +10,31 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { MapPin, Phone, Mail, MapIcon, CheckCircle, User, Package, AlertCircle, Camera } from "lucide-react"
 
-export default function DeliveryDetailsModal({ order, isOpen, onClose, onDeliveryComplete }) {
+type DeliveryOrder = {
+  id: string;
+  order_number: string;
+  customer_name: string;
+  customer_phone: string;
+  customer_email?: string;
+  special_instructions?: string;
+  total: number;
+  delivery_address: string;
+  delivery_city: string;
+  delivery_state?: string;
+  delivery_zip_code: string;
+  distance?: number;
+  created_at: string;
+  status: string;
+};
+
+type DeliveryDetailsModalProps = {
+  order: DeliveryOrder;
+  isOpen: boolean;
+  onClose: () => void;
+  onDeliveryComplete: (orderId: string, notes: string) => void;
+};
+
+export default function DeliveryDetailsModal({ order, isOpen, onClose, onDeliveryComplete }: DeliveryDetailsModalProps) {
   const [activeTab, setActiveTab] = useState("customer")
   const [isDelivering, setIsDelivering] = useState(false)
   const [deliveryNotes, setDeliveryNotes] = useState("")
@@ -25,7 +49,7 @@ export default function DeliveryDetailsModal({ order, isOpen, onClose, onDeliver
     setIsDelivering(true)
     // Simulate delivery completion
     setTimeout(() => {
-      onDeliveryComplete()
+      onDeliveryComplete(order.id, deliveryNotes)
       setIsDelivering(false)
       setActiveTab("customer")
       setDeliveryNotes("")
@@ -37,7 +61,7 @@ export default function DeliveryDetailsModal({ order, isOpen, onClose, onDeliver
   const getOrderAge = () => {
     const date = new Date(order.created_at)
     const now = new Date()
-    const minutes = Math.floor((now - date) / 60000)
+    const minutes = Math.floor((now.getTime() - date.getTime()) / 60000)
     if (minutes < 1) return "Just now"
     if (minutes < 60) return `${minutes} minutes ago`
     const hours = Math.floor(minutes / 60)
@@ -45,6 +69,7 @@ export default function DeliveryDetailsModal({ order, isOpen, onClose, onDeliver
   }
 
   const getEstimatedDeliveryTime = () => {
+    if (!order.distance) return "N/A"
     const estimatedMinutes = Math.ceil((order.distance / 30) * 60)
     const now = new Date()
     const deliveryTime = new Date(now.getTime() + estimatedMinutes * 60000)
@@ -261,7 +286,7 @@ export default function DeliveryDetailsModal({ order, isOpen, onClose, onDeliver
                       placeholder="Enter 4-digit OTP"
                       value={otp}
                       onChange={(e) => setOtp(e.target.value.slice(0, 4))}
-                      maxLength="4"
+                      maxLength={4}
                       className="border-slate-300"
                     />
                   )}

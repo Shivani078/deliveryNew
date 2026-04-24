@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { MapPin, Clock, Navigation, Zap } from "lucide-react"
 
 export default function OrderCard({ order, priority, onSelect, onNavigate }: { order: any; priority: any; onSelect: any; onNavigate?: any }) {
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case "pending":
         return "bg-yellow-100 text-yellow-800 border-yellow-300"
@@ -19,7 +19,7 @@ export default function OrderCard({ order, priority, onSelect, onNavigate }: { o
     }
   }
 
-  const calculateEstimatedTime = (distance) => {
+  const calculateEstimatedTime = (distance: number) => {
     // Assuming average speed of 30 km/h in city traffic
     const estimatedMinutes = Math.ceil((distance / 30) * 60)
     if (estimatedMinutes < 1) return "< 1 min"
@@ -29,10 +29,10 @@ export default function OrderCard({ order, priority, onSelect, onNavigate }: { o
     return `${hours}h ${mins}m`
   }
 
-  const timeAgo = (dateString) => {
+  const timeAgo = (dateString: string) => {
     const date = new Date(dateString)
     const now = new Date()
-    const minutes = Math.floor((now - date) / 60000)
+    const minutes = Math.floor((now.getTime() - date.getTime()) / 60000)
     if (minutes < 1) return "Just now"
     if (minutes < 60) return `${minutes}m ago`
     const hours = Math.floor(minutes / 60)
@@ -40,11 +40,16 @@ export default function OrderCard({ order, priority, onSelect, onNavigate }: { o
   }
 
   const isUrgent = () => {
-    const date = new Date(order.created_at)
-    const now = new Date()
-    const minutes = Math.floor((now - date) / 60000)
-    return minutes > 30
-  }
+  if (!order?.created_at) return false
+
+  const date = new Date(order.created_at).getTime()
+  if (isNaN(date)) return false
+
+  const now = Date.now()
+  const minutes = (now - date) / 60000
+
+  return minutes > 30
+}
 
   return (
     <Card

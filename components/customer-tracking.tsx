@@ -7,13 +7,35 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { CheckCircle2, Clock, Navigation, AlertCircle, Search, Phone, MessageSquare } from "lucide-react"
 
+type Order = {
+  order_number: string;
+  customer_name: string;
+  status: string;
+  total: number;
+  items: number;
+  created_at: Date;
+  estimated_delivery: Date;
+  current_location: string;
+  delivery_partner: {
+    name: string;
+    phone: string;
+    rating: number;
+  };
+  timeline: Array<{
+    status: string;
+    message: string;
+    timestamp: Date | null;
+    completed: boolean;
+  }>;
+};
+
 export default function CustomerTracking() {
   const [trackingNumber, setTrackingNumber] = useState("")
-  const [trackedOrder, setTrackedOrder] = useState(null)
+  const [trackedOrder, setTrackedOrder] = useState<Order | null>(null)
   const [isSearching, setIsSearching] = useState(false)
 
   // Mock orders database
-  const mockOrders = {
+  const mockOrders: Record<string, Order> = {
     "ORD-001": {
       order_number: "ORD-001",
       customer_name: "Rajesh Kumar",
@@ -120,7 +142,7 @@ export default function CustomerTracking() {
     }, 500)
   }
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case "pending":
         return "bg-yellow-100 text-yellow-800 border-yellow-300"
@@ -135,7 +157,7 @@ export default function CustomerTracking() {
     }
   }
 
-  const getStatusIcon = (status) => {
+  const getStatusIcon = (status: string) => {
     switch (status) {
       case "pending":
         return <Clock className="w-5 h-5" />
@@ -150,12 +172,12 @@ export default function CustomerTracking() {
     }
   }
 
-  const formatTime = (date) => {
+  const formatTime = (date: Date | null) => {
     if (!date) return ""
     return date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
   }
 
-  const formatDate = (date) => {
+  const formatDate = (date: Date) => {
     return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
   }
 
